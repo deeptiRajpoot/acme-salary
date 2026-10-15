@@ -1,0 +1,275 @@
+openapi: 3.0.3
+info:
+  title: ACME Salary Management API
+  version: 1.0.0
+servers:
+  - url: /api
+paths:
+  /employees:
+    get:
+      summary: Search employees (server-side paging, sorting, filtering)
+      parameters:
+        - { name: page, in: query, schema: { type: integer, default: 0 } }
+        - { name: size, in: query, schema: { type: integer, default: 25, maximum: 200 } }
+        - { name: sort, in: query, description: "field,asc|desc. Allowed fields: lastName, email, country, department, level, jobTitle, hireDate, salary (local currency), salaryUsd", schema: { type: string, default: "lastName,asc" } }
+        - { name: q, in: query, description: "name/email contains", schema: { type: string } }
+        - { name: country, in: query, schema: { type: string, description: ISO-3166 alpha-2 } }
+        - { name: department, in: query, schema: { type: string } }
+        - { name: level, in: query, schema: { type: string } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/EmployeePage" } } } }
+    post:
+      summary: Create employee
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/EmployeeInput" } } } }
+      responses:
+        "201": { description: Created, content: { application/json: { schema: { $ref: "#/components/schemas/Employee" } } } }
+        "400": { $ref: "#/components/responses/Problem" }
+  /employees/{id}:
+    parameters: [ { name: id, in: path, required: true, schema: { type: integer, format: int64 } } ]
+    get:
+      summary: Get employee
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Employee" } } } }
+        "404": { $ref: "#/components/responses/Problem" }
+    put:
+      summary: Update employee profile (not salary; use salary endpoint)
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/EmployeeInput" } } } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Employee" } } } }
+        "400": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+    delete:
+      summary: Delete employee
+      responses:
+        "204": { description: Deleted }
+        "404": { $ref: "#/components/responses/Problem" }
+  /employees/{id}/salary:
+    parameters: [ { name: id, in: path, required: true, schema: { type: integer, format: int64 } } ]
+    post:
+      summary: Change salary; appends a history record
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/SalaryChangeInput" } } } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Employee" } } } }
+        "400": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+  /employees/{id}/salary-history:
+    parameters: [ { name: id, in: path, required: true, schema: { type: integer, format: int64 } } ]
+    get:
+      summary: Salary history, newest first
+      responses:
+        "404": { $ref: "#/components/responses/Problem" }
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/SalaryHistoryEntry" } } } } }
+  /lookups:
+    get:
+      summary: Values for filter dropdowns
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Lookups" } } } }
+  /analytics/summary:
+    get:
+      summary: Org-wide headcount and pay stats (USD)
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Summary" } } } }
+  /analytics/by-country:
+    get:
+      summary: Pay stats grouped by country (USD)
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/GroupStats" } } } } }
+  /analytics/by-department:
+    get:
+      summary: Pay stats grouped by department (USD)
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/GroupStats" } } } } }
+  /analytics/by-level:
+    get:
+      summary: Pay stats grouped by job level (USD)
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/GroupStats" } } } } }
+  /analytics/distribution:
+    get:
+      summary: Salary histogram in USD
+      parameters:
+        - { name: buckets, in: query, schema: { type: integer, default: 20 } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/Bucket" } } } } }
+  /analytics/pay-gap:
+    get:
+      summary: Median pay by gender within department+level cohorts (min 3 women and 3 men each; gender X excluded)
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/PayGap" } } } }
+  /analytics/outliers:
+    get:
+      summary: Employees more than 2 std devs (population sd) from their peer group (country+department+level, min 5 peers), USD, ordered by abs(z)
+      parameters:
+        - { name: limit, in: query, schema: { type: integer, default: 50 } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/Outlier" } } } } }
+  /import/employees:
+    post:
+      summary: Import employees from CSV (multipart field "file"). Valid rows are saved; invalid rows reported.
+      requestBody: { required: true, content: { multipart/form-data: { schema: { type: object, properties: { file: { type: string, format: binary } } } } } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/ImportResult" } } } }
+  /export/employees:
+    get:
+      summary: Export employees as CSV (same filters as /employees, no paging)
+      parameters:
+        - { name: q, in: query, schema: { type: string } }
+        - { name: country, in: query, schema: { type: string } }
+        - { name: department, in: query, schema: { type: string } }
+        - { name: level, in: query, schema: { type: string } }
+      responses:
+        "200": { description: CSV, content: { text/csv: { schema: { type: string } } } }
+components:
+  responses:
+    Problem:
+      description: RFC 7807 problem details
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+  schemas:
+    Problem:
+      type: object
+      properties:
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        errors: { type: object, additionalProperties: { type: string }, description: "field -> message" }
+    Employee:
+      type: object
+      required: [id, firstName, lastName, email, country, department, level, jobTitle, gender, hireDate, salary, currency, salaryUsd]
+      properties:
+        id: { type: integer, format: int64 }
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: string }
+        country: { type: string, description: ISO alpha-2 }
+        department: { type: string }
+        level: { type: string, description: "e.g. L1..L7" }
+        jobTitle: { type: string }
+        gender: { type: string, enum: [F, M, X] }
+        hireDate: { type: string, format: date }
+        salary: { type: number, description: Annual base in local currency }
+        currency: { type: string, description: ISO 4217 }
+        salaryUsd: { type: number }
+    EmployeeInput:
+      type: object
+      required: [firstName, lastName, email, country, department, level, jobTitle, gender, hireDate, salary, currency]
+      properties:
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: string, format: email }
+        country: { type: string }
+        department: { type: string }
+        level: { type: string }
+        jobTitle: { type: string }
+        gender: { type: string, enum: [F, M, X] }
+        hireDate: { type: string, format: date }
+        salary: { type: number, minimum: 0, exclusiveMinimum: true }
+        currency: { type: string }
+    EmployeePage:
+      type: object
+      required: [content, page, size, totalElements, totalPages]
+      properties:
+        content: { type: array, items: { $ref: "#/components/schemas/Employee" } }
+        page: { type: integer }
+        size: { type: integer }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+    SalaryChangeInput:
+      type: object
+      required: [newSalary, reason]
+      properties:
+        newSalary: { type: number, minimum: 0, exclusiveMinimum: true }
+        reason: { type: string, minLength: 3 }
+        changedBy: { type: string, description: "optional; server defaults to hr.manager" }
+    SalaryHistoryEntry:
+      type: object
+      required: [id, newSalary, currency, reason, changedBy, changedAt]
+      properties:
+        id: { type: integer, format: int64 }
+        oldSalary: { type: number, nullable: true }
+        newSalary: { type: number }
+        currency: { type: string }
+        reason: { type: string }
+        changedBy: { type: string }
+        changedAt: { type: string, format: date-time }
+    Lookups:
+      type: object
+      required: [countries, departments, levels, currencies]
+      properties:
+        countries: { type: array, items: { type: object, properties: { code: { type: string }, name: { type: string }, currency: { type: string } } } }
+        departments: { type: array, items: { type: string } }
+        levels: { type: array, items: { type: string } }
+        currencies: { type: array, items: { type: string } }
+    Summary:
+      type: object
+      required: [headcount, totalPayrollUsd, meanUsd, medianUsd, p25Usd, p75Usd, p90Usd, countries, departments]
+      properties:
+        headcount: { type: integer }
+        totalPayrollUsd: { type: number }
+        meanUsd: { type: number }
+        medianUsd: { type: number }
+        p25Usd: { type: number }
+        p75Usd: { type: number }
+        p90Usd: { type: number }
+        countries: { type: integer }
+        departments: { type: integer }
+    GroupStats:
+      type: object
+      required: [group, headcount, minUsd, p25Usd, medianUsd, p75Usd, p90Usd, maxUsd, meanUsd]
+      properties:
+        group: { type: string }
+        headcount: { type: integer }
+        minUsd: { type: number }
+        p25Usd: { type: number }
+        medianUsd: { type: number }
+        p75Usd: { type: number }
+        p90Usd: { type: number }
+        maxUsd: { type: number }
+        meanUsd: { type: number }
+    Bucket:
+      type: object
+      required: [fromUsd, toUsd, count]
+      properties:
+        fromUsd: { type: number }
+        toUsd: { type: number }
+        count: { type: integer }
+    PayGap:
+      type: object
+      required: [overallGapPercent, cohorts]
+      properties:
+        overallGapPercent: { type: number, description: "positive = women paid less. (median M - median F) / median M * 100, cohort-weighted" }
+        cohorts:
+          type: array
+          items:
+            type: object
+            properties:
+              department: { type: string }
+              level: { type: string }
+              medianFemaleUsd: { type: number }
+              medianMaleUsd: { type: number }
+              gapPercent: { type: number }
+              femaleCount: { type: integer }
+              maleCount: { type: integer }
+    Outlier:
+      type: object
+      required: [employeeId, name, country, department, level, salaryUsd, peerMedianUsd, zScore]
+      properties:
+        employeeId: { type: integer, format: int64 }
+        name: { type: string }
+        country: { type: string }
+        department: { type: string }
+        level: { type: string }
+        salaryUsd: { type: number }
+        peerMedianUsd: { type: number }
+        zScore: { type: number }
+    ImportResult:
+      type: object
+      required: [totalRows, imported, failed, errors]
+      properties:
+        totalRows: { type: integer }
+        imported: { type: integer }
+        failed: { type: integer }
+        errors:
+          type: array
+          items: { type: object, properties: { row: { type: integer }, message: { type: string } } }
