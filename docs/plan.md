@@ -17,7 +17,7 @@ Pay analytics first, CRUD second.
 - **DB**: SQLite (zero-ops deploy). Tables: `employee`, `department`, `job_level`, `country`, `currency_rate`, `salary_history`. Indexes on country, department, job, salary, name.
 - **Analytics**: SQL aggregates for counts/avg/min/max; percentiles and outliers as pure Java functions over per-group lists (fine at 10k rows).
 - **API**: REST + springdoc OpenAPI. `GET /employees` (page/sort/filter/search), `POST/PUT/DELETE`, `POST /employees/{id}/salary`, `GET /analytics/{summary|by-country|by-department|distribution|outliers}`, CSV import/export. Errors as RFC 7807 `ProblemDetail`.
-- **Frontend**: React + TypeScript + Vite, MUI (DataGrid server-side mode), TanStack Query, Recharts, typed client generated from OpenAPI. Pages: Dashboard, Employees (grid + edit drawer), Employee detail (history), Import.
+- **Frontend**: Angular , Pages: Dashboard, Employees (grid + edit drawer), Employee detail (history), Import.
 - **Auth**: deliberately out (single persona).
 
 ## Out of scope
