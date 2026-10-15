@@ -1,0 +1,45 @@
+<app-panel heading="Median pay by group (USD)" subtitle="Dot = median, bar = P25 to P75" [resource]="stats" [skeletonHeight]="320">
+  <div panelActions class="toggles">
+    <mat-button-toggle-group aria-label="Group by" [value]="dim()" (change)="setDim($event.value)">
+      @for (d of dimensions; track d) {
+        <mat-button-toggle [value]="d" class="cap">{{ d }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+    <mat-button-toggle-group aria-label="View" [value]="view()" (change)="setView($event.value)">
+      <mat-button-toggle value="chart">Chart</mat-button-toggle>
+      <mat-button-toggle value="table">Table</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  @if (view() === 'chart') {
+    <div class="chart-box">
+      <canvas baseChart type="bar" [data]="data()" [options]="options()" role="img" [attr.aria-label]="ariaLabel()"></canvas>
+    </div>
+  } @else {
+    <div class="table-scroll">
+      <table mat-table [dataSource]="rows()" [attr.aria-label]="ariaLabel()" class="full-width">
+        <ng-container matColumnDef="group">
+          <th mat-header-cell *matHeaderCellDef class="cap">{{ dim() }}</th>
+          <td mat-cell *matCellDef="let r">{{ r.group }}</td>
+        </ng-container>
+        <ng-container matColumnDef="headcount">
+          <th mat-header-cell *matHeaderCellDef class="num">Headcount</th>
+          <td mat-cell *matCellDef="let r" class="num">{{ r.headcount }}</td>
+        </ng-container>
+        <ng-container matColumnDef="p25">
+          <th mat-header-cell *matHeaderCellDef class="num">P25</th>
+          <td mat-cell *matCellDef="let r" class="num">{{ r.p25Usd | usd }}</td>
+        </ng-container>
+        <ng-container matColumnDef="median">
+          <th mat-header-cell *matHeaderCellDef class="num">Median</th>
+          <td mat-cell *matCellDef="let r" class="num">{{ r.medianUsd | usd }}</td>
+        </ng-container>
+        <ng-container matColumnDef="p75">
+          <th mat-header-cell *matHeaderCellDef class="num">P75</th>
+          <td mat-cell *matCellDef="let r" class="num">{{ r.p75Usd | usd }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+    </div>
+  }
+</app-panel>

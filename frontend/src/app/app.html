@@ -1,0 +1,35 @@
+@if (auth.isAuthenticated()) {
+<mat-sidenav-container class="shell">
+  <mat-sidenav #sidenav class="nav" [mode]="narrow() ? 'over' : 'side'" [opened]="!narrow()">
+    <div class="brand">
+      <mat-icon aria-hidden="true">payments</mat-icon>
+      <span>ACME Salary</span>
+    </div>
+    <mat-nav-list aria-label="Main navigation">
+      @for (item of nav; track item.path) {
+        <a mat-list-item [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: item.exact }" (click)="narrow() && sidenav.close()">
+          <mat-icon matListItemIcon aria-hidden="true">{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar class="topbar">
+      @if (narrow()) {
+        <button mat-icon-button type="button" aria-label="Open navigation" (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      }
+      <span class="topbar-title">HR Salary Management</span>
+      <span class="spacer"></span>
+      <span class="persona"><mat-icon aria-hidden="true">account_circle</mat-icon> {{ auth.user()?.fullName }} ({{ auth.user()?.role === 'OWNER' ? 'Owner' : 'HR' }})</span>
+      <app-theme-toggle />
+      <button mat-icon-button type="button" aria-label="Sign out" (click)="auth.signOut()"><mat-icon>logout</mat-icon></button>
+    </mat-toolbar>
+    <main class="content"><router-outlet /></main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+} @else {
+  <router-outlet />
+}

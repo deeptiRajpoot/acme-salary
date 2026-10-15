@@ -1,0 +1,27 @@
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light dark;
+  @include mat.theme((
+    color: mat.$azure-palette,
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+html.light { color-scheme: light; }
+html.dark { color-scheme: dark; }
+
+html, body { height: 100%; margin: 0; }
+body { font-family: Roboto, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--mat-sys-surface-container-lowest); color: var(--mat-sys-on-surface); }
+
+.page-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.page-header h1 { margin: 0; font-size: 1.6rem; font-weight: 600; }
+.page-header p { margin: 4px 0 0; color: var(--mat-sys-on-surface-variant); }
+.page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.muted { color: var(--mat-sys-on-surface-variant); }
+.snack-success { --mat-snack-bar-container-color: #1b5e20; --mat-snack-bar-supporting-text-color: #fff; }
+.snack-error { --mat-snack-bar-container-color: #b3261e; --mat-snack-bar-supporting-text-color: #fff; }
+.danger-btn { --mat-button-filled-container-color: #b3261e; --mat-button-filled-label-text-color: #fff; }
+.full-width { width: 100%; }

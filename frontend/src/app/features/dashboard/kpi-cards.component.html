@@ -1,0 +1,11 @@
+<app-panel heading="Organisation snapshot" subtitle="All figures in USD, annual base salary" [resource]="summary" [skeletonHeight]="90">
+  <dl class="kpis">
+    @for (kpi of kpis(); track kpi.label) {
+      <div class="kpi" data-testid="kpi">
+        <dt>{{ kpi.label }}</dt>
+        <dd class="kpi-value">{{ kpi.value }}</dd>
+        <dd class="kpi-hint">{{ kpi.hint }}</dd>
+      </div>
+    }
+  </dl>
+</app-panel>

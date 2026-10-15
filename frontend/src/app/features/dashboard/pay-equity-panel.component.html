@@ -1,0 +1,26 @@
+<app-panel heading="Pay equity" subtitle="Gender gap in median pay within department + level cohorts" [resource]="gap" [skeletonHeight]="260">
+  <p class="overall" data-testid="overall-gap">{{ overall() | pct }}</p>
+  <p class="verdict" [class.warn]="isWarning()" role="status">{{ summary() }}</p>
+  <div class="table-scroll">
+    <table mat-table [dataSource]="worst()" aria-label="Largest pay gap cohorts" class="full-width">
+      <ng-container matColumnDef="cohort">
+        <th mat-header-cell *matHeaderCellDef>Cohort</th>
+        <td mat-cell *matCellDef="let c">{{ c.department }} {{ c.level }} <span class="muted">({{ c.femaleCount }}F / {{ c.maleCount }}M)</span></td>
+      </ng-container>
+      <ng-container matColumnDef="female">
+        <th mat-header-cell *matHeaderCellDef class="num">F median</th>
+        <td mat-cell *matCellDef="let c" class="num">{{ c.medianFemaleUsd | usd }}</td>
+      </ng-container>
+      <ng-container matColumnDef="male">
+        <th mat-header-cell *matHeaderCellDef class="num">M median</th>
+        <td mat-cell *matCellDef="let c" class="num">{{ c.medianMaleUsd | usd }}</td>
+      </ng-container>
+      <ng-container matColumnDef="gap">
+        <th mat-header-cell *matHeaderCellDef class="num">Gap</th>
+        <td mat-cell *matCellDef="let c" class="num">{{ c.gapPercent | pct }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </div>
+</app-panel>

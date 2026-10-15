@@ -1,0 +1,44 @@
+<a mat-button routerLink="/employees" class="back"><mat-icon>arrow_back</mat-icon> All employees</a>
+
+@if (loadError()) {
+  <div class="error-banner" role="alert">
+    <mat-icon aria-hidden="true">error_outline</mat-icon>
+    <span>{{ loadError() }}</span>
+    <button mat-button type="button" (click)="employee.reload()">Retry</button>
+  </div>
+} @else if (employee.hasValue()) {
+  @let e = employee.value();
+  <header class="page-header">
+    <div>
+      <h1>{{ e.firstName }} {{ e.lastName }}</h1>
+      <p>{{ e.jobTitle }} &middot; {{ e.department }} {{ e.level }} &middot; {{ e.country }}</p>
+    </div>
+    <div class="page-actions">
+      <button mat-stroked-button type="button" class="danger" (click)="remove(e)" data-testid="delete"><mat-icon>delete</mat-icon> Delete</button>
+      <button mat-flat-button type="button" (click)="changeSalary(e)" data-testid="change-salary">Change salary</button>
+    </div>
+  </header>
+  <div class="layout">
+    <mat-card appearance="outlined">
+      <mat-card-header><h2 class="card-title">Profile</h2></mat-card-header>
+      <mat-card-content>
+        <app-employee-form [initial]="e" [lookups]="lookups()" [salaryLocked]="true" [saving]="saving()" [failure]="failure()"
+          submitLabel="Save profile" (save)="save($event)" />
+      </mat-card-content>
+    </mat-card>
+    <div class="side">
+      <mat-card appearance="outlined">
+        <mat-card-content>
+          <div class="overline">Current salary</div>
+          <div class="salary" data-testid="salary">{{ e.salary | money: e.currency }}</div>
+          <div class="muted">{{ e.salaryUsd | usd }} USD</div>
+        </mat-card-content>
+      </mat-card>
+      <app-panel heading="Salary history" subtitle="Newest first" [resource]="history" [skeletonHeight]="120">
+        <app-salary-history [entries]="entries()" />
+      </app-panel>
+    </div>
+  </div>
+} @else {
+  <div class="skeleton" aria-busy="true" aria-label="Loading employee"></div>
+}

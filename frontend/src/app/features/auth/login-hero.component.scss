@@ -1,0 +1,11 @@
+:host { display: block; }
+h1 { margin: 32px 0 8px; font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 700; color: var(--mat-sys-on-surface); }
+.tagline { margin: 0 0 32px; font-size: 1.15rem; color: var(--mat-sys-on-surface-variant); }
+.features { display: flex; gap: 16px 24px; flex-wrap: wrap; list-style: none; margin: 0 0 24px; padding: 0; }
+.features li { display: flex; flex-direction: column; align-items: center; width: 96px; text-align: center; font-size: 0.9rem; color: var(--mat-sys-on-surface-variant); gap: 8px; }
+.badge { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; }
+.indigo { background: #e0e4ff; color: #4a5bd4; }
+.blue { background: #dbe8ff; color: #3b6fe0; }
+.green { background: #d9f3e8; color: #1f9d6b; }
+.purple { background: #eadcfb; color: #7e3fc7; }
+.art { width: 100%; max-width: 560px; height: auto; }

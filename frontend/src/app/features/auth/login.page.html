@@ -1,0 +1,72 @@
+<div class="login">
+  <section class="hero"><app-login-hero /></section>
+
+  <section class="panel">
+    <app-theme-toggle class="theme" />
+    <div class="card">
+      <div class="head">
+        <app-acme-logo [small]="true" />
+        <h2>Salary Management System</h2>
+        <p>{{ mode() === 'signin' ? 'Welcome back! Please login to your account.' : 'Finish setting up your account.' }}</p>
+      </div>
+
+      @if (mode() === 'signin') {
+        <form [formGroup]="signInForm" (ngSubmit)="submit()" novalidate>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-icon matPrefix aria-hidden="true">person</mat-icon>
+            <input matInput formControlName="username" placeholder="Username" autocomplete="username" aria-label="Username" />
+            <mat-error appFieldError [control]="signInForm.controls.username" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-icon matPrefix aria-hidden="true">lock</mat-icon>
+            <input matInput formControlName="password" placeholder="Password" autocomplete="current-password" aria-label="Password" [type]="showPassword() ? 'text' : 'password'" />
+            <button mat-icon-button matSuffix type="button" aria-label="Show or hide password" (click)="togglePassword()">
+              <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error appFieldError [control]="signInForm.controls.password" />
+          </mat-form-field>
+          <div class="row">
+            <mat-checkbox formControlName="rememberMe">Remember me</mat-checkbox>
+            <a class="link" href="mailto:hr-support@acme.com?subject=Password%20reset">Forgot password?</a>
+          </div>
+          @if (formError()) { <p class="form-error" role="alert">{{ formError() }}</p> }
+          <button mat-flat-button class="cta" type="submit" [disabled]="busy()">
+            <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
+            @if (busy()) { <mat-spinner diameter="20" /> } @else { <span>Login</span> }
+          </button>
+        </form>
+        <p class="switch">Access is by invitation only. Ask an Owner or HR for an invite link.</p>
+      } @else {
+        @if (preview(); as p) {
+          <p class="invited">Invited as <strong>{{ designation(p.role) }}</strong> · {{ p.email }}</p>
+        }
+        <form [formGroup]="signUpForm" (ngSubmit)="submit()" novalidate>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-icon matPrefix aria-hidden="true">badge</mat-icon>
+            <input matInput formControlName="fullName" placeholder="Full name" autocomplete="name" aria-label="Full name" />
+            <mat-error appFieldError [control]="signUpForm.controls.fullName" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-icon matPrefix aria-hidden="true">person</mat-icon>
+            <input matInput formControlName="username" placeholder="Username" autocomplete="username" aria-label="Username" />
+            <mat-error appFieldError [control]="signUpForm.controls.username" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-icon matPrefix aria-hidden="true">lock</mat-icon>
+            <input matInput formControlName="password" placeholder="Password (min 8 characters)" autocomplete="new-password" aria-label="Password" [type]="showPassword() ? 'text' : 'password'" />
+            <button mat-icon-button matSuffix type="button" aria-label="Show or hide password" (click)="togglePassword()">
+              <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error appFieldError [control]="signUpForm.controls.password" />
+          </mat-form-field>
+          @if (formError()) { <p class="form-error" role="alert">{{ formError() }}</p> }
+          <button mat-flat-button class="cta" type="submit" [disabled]="busy() || !preview()">
+            <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
+            @if (busy()) { <mat-spinner diameter="20" /> } @else { <span>Create account</span> }
+          </button>
+        </form>
+        <p class="switch">Already have an account? <button type="button" class="link" (click)="setMode('signin')">Login</button></p>
+      }
+    </div>
+  </section>
+</div>

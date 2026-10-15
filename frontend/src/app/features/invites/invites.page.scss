@@ -1,0 +1,7 @@
+.card { max-width: 720px; margin-bottom: 16px; }
+.form { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+.form mat-form-field { flex: 1 1 220px; }
+.form button { height: 56px; }
+.error { color: var(--mat-sys-error); margin: 0; }
+.link-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.link { flex: 1 1 300px; padding: 10px; border: 1px solid var(--mat-sys-outline-variant); border-radius: 8px; font: inherit; }

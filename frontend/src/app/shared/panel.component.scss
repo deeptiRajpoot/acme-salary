@@ -1,0 +1,19 @@
+:host { display: block; height: 100%; }
+.panel { height: 100%; }
+.panel-titles { text-align: left; flex: 1; }
+.panel-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 16px 16px 0; flex-wrap: wrap; }
+.panel-title { margin: 0; font-size: 1.05rem; font-weight: 600; }
+.panel-subtitle { margin: 2px 0 0; font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }
+.panel-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.skeleton {
+  height: 220px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--mat-sys-surface-container) 25%, var(--mat-sys-surface-container-high) 50%, var(--mat-sys-surface-container) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+.skeleton-sm { height: 72px; }
+.panel-error { display: flex; align-items: center; gap: 12px; padding: 24px 0; color: var(--mat-sys-error); flex-wrap: wrap; }
+mat-card-content { padding-top: 16px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }

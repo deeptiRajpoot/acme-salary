@@ -1,0 +1,45 @@
+<app-acme-logo />
+<h1>Salary Management System</h1>
+<p class="tagline">Simplifying payroll. Empowering people.</p>
+
+<ul class="features">
+  @for (f of features; track f.label) {
+    <li>
+      <span class="badge" [class]="f.tone"><mat-icon aria-hidden="true">{{ f.icon }}</mat-icon></span>
+      <span>{{ f.label }}</span>
+    </li>
+  }
+</ul>
+
+<svg class="art" viewBox="0 0 560 300" aria-hidden="true">
+  <ellipse cx="280" cy="270" rx="250" ry="22" fill="#c7d2fe" opacity=".6" />
+  <path d="M60 40 Q80 -10 200 20 T420 20 Q520 40 500 160 T380 260 H120 Q20 240 60 140 Z" fill="#dbe4ff" opacity=".7" />
+  <path d="M40 90 C70 100 100 160 90 230 C40 200 30 140 40 90Z" fill="#a5b8f8" />
+  <path d="M520 110 C490 120 470 170 480 230 C530 200 540 150 520 110Z" fill="#a5b8f8" />
+  <g transform="rotate(-3 220 140)">
+    <rect x="120" y="30" width="250" height="230" rx="8" fill="#fff" stroke="#c7d2fe" />
+    <text x="245" y="72" text-anchor="middle" font-size="26" font-weight="700" fill="#3949ab" font-family="Roboto, sans-serif">SALARY</text>
+    <rect x="145" y="95" width="150" height="8" rx="4" fill="#c7d2fe" />
+    <rect x="145" y="120" width="100" height="8" rx="4" fill="#dbe4ff" />
+    <rect x="145" y="145" width="120" height="8" rx="4" fill="#dbe4ff" />
+    <rect x="320" y="120" width="30" height="8" rx="4" fill="#dbe4ff" />
+    <rect x="145" y="190" width="160" height="8" rx="4" fill="#dbe4ff" />
+  </g>
+  <g>
+    <ellipse cx="130" cy="228" rx="42" ry="12" fill="#f59e0b" />
+    <rect x="88" y="190" width="84" height="38" fill="#fbbf24" />
+    <ellipse cx="130" cy="190" rx="42" ry="12" fill="#fcd34d" />
+    <ellipse cx="205" cy="225" rx="50" ry="14" fill="#f59e0b" />
+    <circle cx="200" cy="205" r="46" fill="#fbbf24" stroke="#f59e0b" stroke-width="4" />
+    <text x="200" y="222" text-anchor="middle" font-size="46" font-weight="700" fill="#b45309" font-family="Roboto, sans-serif">₹</text>
+  </g>
+  <g transform="rotate(8 370 210)">
+    <rect x="320" y="130" width="120" height="150" rx="10" fill="#3949ab" />
+    <rect x="334" y="144" width="92" height="30" rx="5" fill="#8fa4f3" />
+    @for (row of [0, 1, 2]; track row) {
+      @for (col of [0, 1, 2]; track col) {
+        <rect [attr.x]="334 + col * 32" [attr.y]="188 + row * 28" width="26" height="20" rx="4" fill="#6f86e8" />
+      }
+    }
+  </g>
+</svg>

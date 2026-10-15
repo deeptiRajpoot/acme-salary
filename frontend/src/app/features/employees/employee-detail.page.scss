@@ -1,0 +1,11 @@
+.back { margin-left: -8px; margin-bottom: 8px; }
+.layout { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; align-items: start; }
+.side { display: grid; gap: 16px; }
+.card-title { margin: 8px 0 0; padding: 8px 16px 0; font-size: 1.05rem; font-weight: 600; }
+mat-card-content { padding-top: 16px; }
+.overline { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mat-sys-on-surface-variant); }
+.salary { font-size: 2rem; font-weight: 600; }
+.danger { --mat-button-outlined-label-text-color: var(--mat-sys-error); }
+.error-banner { display: flex; align-items: center; gap: 12px; padding: 8px 16px; border-radius: 8px; background: var(--mat-sys-error-container); color: var(--mat-sys-on-error-container); }
+.skeleton { height: 320px; border-radius: 12px; background: var(--mat-sys-surface-container); }
+@media (max-width: 959px) { .layout { grid-template-columns: 1fr; } }

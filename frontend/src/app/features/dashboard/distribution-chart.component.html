@@ -1,0 +1,5 @@
+<app-panel heading="Salary distribution" subtitle="Number of employees per salary band" [resource]="buckets" [skeletonHeight]="280">
+  <div class="chart-box">
+    <canvas baseChart type="bar" [data]="data()" [options]="options()" role="img" aria-label="Histogram of employees by annual salary in USD"></canvas>
+  </div>
+</app-panel>

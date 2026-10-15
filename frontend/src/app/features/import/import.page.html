@@ -1,0 +1,31 @@
+<header class="page-header">
+  <div>
+    <h1>Import employees</h1>
+    <p>Upload a CSV. Valid rows are saved; invalid rows are reported below.</p>
+  </div>
+</header>
+
+<mat-card appearance="outlined" class="card">
+  <mat-card-content>
+    <div class="dropzone" [class.dragging]="dragging()" (dragover)="onDragOver($event)" (dragleave)="dragging.set(false)" (drop)="onDrop($event)">
+      <mat-icon class="big" aria-hidden="true">upload_file</mat-icon>
+      <p data-testid="file-name">{{ file()?.name ?? 'Drag and drop a CSV file here' }}</p>
+      <input #fileInput type="file" accept=".csv,text/csv" hidden data-testid="file-input" (change)="pick(fileInput.files)" />
+      <button mat-stroked-button type="button" (click)="fileInput.click()">Choose file</button>
+    </div>
+    <div class="actions">
+      <button mat-flat-button type="button" [disabled]="!file() || uploading()" (click)="upload()" data-testid="upload">
+        {{ uploading() ? 'Uploading...' : 'Upload' }}
+      </button>
+      <a href="sample-employees.csv" download>Download sample CSV template</a>
+    </div>
+    <p class="muted hint">Required columns: firstName, lastName, email, country, department, level, jobTitle, gender, hireDate, salary, currency.</p>
+  </mat-card-content>
+</mat-card>
+
+@if (error()) {
+  <p class="error" role="alert" data-testid="import-error">{{ error() }}</p>
+}
+@if (result(); as r) {
+  <app-import-result [result]="r" />
+}

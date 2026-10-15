@@ -1,0 +1,9 @@
+.shell { height: 100vh; background: var(--mat-sys-surface-container-lowest); }
+.nav { width: 232px; }
+.brand { display: flex; align-items: center; gap: 8px; padding: 20px 20px 12px; font-weight: 700; font-size: 1.1rem; color: var(--mat-sys-primary); }
+.active { background: var(--mat-sys-secondary-container); }
+.topbar { position: sticky; top: 0; z-index: 2; background: var(--mat-sys-surface); border-bottom: 1px solid var(--mat-sys-outline-variant); }
+.topbar-title { font-size: 1rem; font-weight: 500; }
+.spacer { flex: 1; }
+.persona { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; color: var(--mat-sys-on-surface-variant); }
+.content { padding: 24px; max-width: 1400px; margin: 0 auto; }

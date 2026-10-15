@@ -1,0 +1,4 @@
+firstName,lastName,email,country,department,level,jobTitle,gender,hireDate,salary,currency
+Ada,Lovelace,ada.lovelace@acme.example,GB,Engineering,L5,Staff Engineer,F,2021-03-15,95000,GBP
+Grace,Hopper,grace.hopper@acme.example,US,Engineering,L6,Principal Engineer,F,2019-07-01,185000,USD
+Alan,Turing,alan.turing@acme.example,DE,Research,L5,Research Scientist,M,2022-01-10,88000,EUR
